@@ -1,8 +1,17 @@
 # mach/system-sdk, more libraries for cross-compilation with Zig <a href="https://hexops.com"><img align="right" alt="Hexops logo" src="https://raw.githubusercontent.com/hexops/media/master/readme.svg"></img></a>
 
-`mach/system-sdk` is something that [Mach engine](https://github.com/hexops/mach) uses today to enable cross compilation of DirectX/Metal/OpenGL/Vulkan graphics (and a few other bits in the future) with Zig.
+* Updated DirectX 12 headers for use with MinGW/Zig
+* Cross-compile DirectX apps targetting Windows
+* Cross compile Metal apps targetting macOS/iOS Intel or Apple Silicon.
+* Cross compile OpenGL/Vulkan apps targetting Linux (not other OSs, sorry)
 
-Although it was intended for Mach specifically (I wouldn't be surprised if one day Zig provides a better option out of the box), I realize others might benefit from this and so I've made it easy for anyone to use.
+## What is this?
+
+One thing I care about extremely with [Mach engine](https://github.com/hexops/mach) is that you're able to cross compile for any OS with nothing more than `zig` and `git`. And while we can build most things from source (GLFW, and even the DirectX Shader Compiler!) there are a few system headers / libraries where, really, we just need a copy of them.
+
+`mach/system-sdk` is how Mach engine gets a copy of them via the Zig build system.
+
+Although it was intended for Mach specifically, and I wouldn't be surprised if one day Zig provides better options out of the box, I realize others might benefit from this and so I've made it easy for anyone to use!
 
 ## What does it provide?
 
@@ -60,12 +69,16 @@ system_sdk.include(b, step, .{
 
 And set the revisions to the Git revisions of your forks of [the SDK repositories.](https://github.com/hexops?q=mach-sdk&type=all&language=&sort=)
 
-## "Eww I don't like it"
+## Is this the right way to do this? Should I be using this?
 
-To be clear, I don't think this is the perfect way or 100% ideal way to handle this. I am positive that the Zig community will eventually land on better solutions here. For example, even producing the updated DirectX 12 headers for MinGW/Zig was not an easy or straightforward task. Storing a few binaries in Git is not ideal, either, even if we do clone with `--depth 1`.
+To be clear, I don't think this is the perfect way or 100% ideal way to handle this. I am positive that the Zig community will eventually land on better solutions here.
 
-I care about Mach engine being incredibly easy to use and cross compile, just `zig` and `git`, no reliance on what is installed on your system otherwise. And so this is more of a workaround until better options present themselves.
+For example, generating updated DirectX 12 headers for MinGW/Zig requires patching Microsoft's IDL files, running them through the Wine WIDL compiler, and then some. Storing even a few binaries in Git is not ideal, even if we do clone with `--depth 1`.
 
-Luckily, with Mach, we're really only depending on a select few system libs. We even build e.g. GLFW and the DirectX shader compiler from source - so it's not like we're just distributing tons of binaries via Git. These are exceptions.
+But, if you care about that developer experience as immensely as I do I hope you'll see a bit of reason behind the madness.
+
+Use at your own peril!
+
+## Issues
 
 Please file issues/complaints in the [main Mach repository](https://github.com/hexops/mach/issues).
